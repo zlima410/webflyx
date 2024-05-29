@@ -2,8 +2,8 @@ class HTMLNode():
     def __init__(self, tag=None, value=None, children=None, props=None):
         self.tag = tag
         self.value = value
-        self.children = children
-        self.props = props
+        self.children = children if children is not None else []
+        self.props = props if props is not None else {}
 
     def to_html(self):
         raise NotImplementedError
@@ -17,14 +17,13 @@ class HTMLNode():
         return f"HTMLNode({self.tag}, {self.value}, {self.children}, {self.props})"
     
 class LeafNode(HTMLNode):
-    # constructor that does not allow children with a data member called value
     def __init__(self, tag=None, value=None, props=None):
         super().__init__(tag, value, props=props)
 
     def to_html(self):
-        if self.tag == None:
+        if self.tag is None:
             return self.value
-        elif self.value == None:
+        elif self.value is None:
             raise ValueError("LeafNode must have a value")
         else:
             props = self.props_to_html()
@@ -35,14 +34,13 @@ class LeafNode(HTMLNode):
             
 class ParentNode(HTMLNode):
     def __init__(self, tag=None, children=None, props=None):
-        super().__init__(tag, children=children, props=props)
+        super().__init__(tag, value=None, children=children, props=props)
 
     def to_html(self):
-        if self.tag == None:
+        if self.tag is None:
             raise ValueError("ParentNode must have a tag")
-        if self.children == None:
+        if not self.children:
             raise ValueError("ParentNode must have children")
-        # recursively call to_html on each child
         children_html = "".join([child.to_html() for child in self.children])
         props = self.props_to_html()
         if props:
