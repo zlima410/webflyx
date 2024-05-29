@@ -15,3 +15,16 @@ class HTMLNode():
     
     def __repr__(self):
         return f"HTMLNode({self.tag}, {self.value}, {self.children}, {self.props})"
+    
+class LeafNode(HTMLNode):
+    # constructor that does not allow children with a data member called value
+    def __init__(self, tag=None, value=None, props=None):
+        super().__init__(tag, value, props=props)
+
+    def to_html(self):
+        if self.tag == None:
+            return self.value
+        elif self.value:
+            return f"<{self.tag} {self.props_to_html()}>{self.value}</{self.tag}>"
+        else:
+            raise ValueError("LeafNode must have a value")
