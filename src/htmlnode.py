@@ -6,7 +6,7 @@ class HTMLNode():
         self.props = props if props is not None else {}
 
     def to_html(self):
-        raise NotImplementedError
+        raise NotImplementedError("Subclasses should implement this method")
     
     def props_to_html(self):
         if self.props:
@@ -18,7 +18,7 @@ class HTMLNode():
     
 class LeafNode(HTMLNode):
     def __init__(self, tag=None, value=None, props=None):
-        super().__init__(tag, value, props=props)
+        super().__init__(tag=tag, value=value, props=props)
 
     def to_html(self):
         if self.tag is None:
@@ -33,16 +33,22 @@ class LeafNode(HTMLNode):
                 return f"<{self.tag}>{self.value}</{self.tag}>"
             
 class ParentNode(HTMLNode):
-    def __init__(self, tag=None, children=None, props=None):
-        super().__init__(tag, value=None, children=children, props=props)
+    def __init__(self, tag, children, props=None):
+        super().__init__(tag=tag, children=children, props=props)
 
     def to_html(self):
         if self.tag is None:
             raise ValueError("ParentNode must have a tag")
+        
         if not self.children:
             raise ValueError("ParentNode must have children")
-        children_html = "".join([child.to_html() for child in self.children])
+        
+        for child in self.children:
+            print(f"Processing child of type: {type(child)}")
+        
+        children_html = "".join(child.to_html() for child in self.children)
         props = self.props_to_html()
+
         if props:
             return f"<{self.tag} {props}>{children_html}</{self.tag}>"
         else:
