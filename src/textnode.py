@@ -1,6 +1,6 @@
 from htmlnode import LeafNode
 class TextNode():
-    def __init__(self, text, text_type, url):
+    def __init__(self, text, text_type, url=None):
         self.text = text
         self.text_type = text_type
         self.url = url
@@ -13,7 +13,9 @@ class TextNode():
         )
     
     def __repr__(self):
-        return f"TextNode({self.text}, {self.text_type}, {self.url})"
+        if self.url == None:
+            return f'TextNode("{self.text}", "{self.text_type}")'
+        return f'TextNode("{self.text}", "{self.text_type}", "{self.url}")'
     
 def text_node_to_html_node(text_node):
         if text_node.text_type == "text":
